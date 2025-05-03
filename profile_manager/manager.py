@@ -211,6 +211,7 @@ class ProfileManager:
         except Exception as e:
             logger.exception(f'Profile {profile_name} error: {e}')
         finally:
+            await context.close()
             _ = self.running_tasks.pop(profile_name, None)
             self.save_profiles()
 

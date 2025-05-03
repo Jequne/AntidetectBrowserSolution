@@ -9,6 +9,11 @@ class Proxy:
     port: int | None = None
     username: str | None = None
     password: str | None = None
+    
+    def __str__(self):
+        if self.username and self.password:
+            return f"http://{self.server}:{self.port}:{self.username}:{self.password}"
+        return f"http://{self.server}:{self.port}"
 
 
 @dataclass
