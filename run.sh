@@ -23,5 +23,5 @@ fi
 echo "Installing Playwright..."
 playwright install
 
-echo "Starting maestro anti detection solution..."
+echo "Starting  anti detection solution..."
 python3 main.py
