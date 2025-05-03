@@ -9,7 +9,7 @@ from profile_manager.structures import Profile
 
 
 async def main():
-    auto_manager = AutomationManager(automate_start=1, automate_end=5)
+    auto_manager = AutomationManager(automate_start=1, automate_end=10)
     automation_script = test_script.MyAutomationScript()
     await auto_manager.do_automation_for_profiles(automation_script)
 
@@ -18,15 +18,15 @@ async def main():
     # await auto_manager.create_profiles(5, proxy_file=proxy_file)
 
 if __name__ == '__main__':
-    # try:
-    #     asyncio.run(run_profile_manager())
-    # except KeyboardInterrupt:
-    #     pass
-
     try:
-        asyncio.run(main())
+        asyncio.run(run_profile_manager())
     except KeyboardInterrupt:
         pass
+
+    # try:
+    #     asyncio.run(main())
+    # except KeyboardInterrupt:
+    #     pass
 
 
 

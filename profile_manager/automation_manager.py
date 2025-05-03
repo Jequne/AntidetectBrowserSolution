@@ -87,8 +87,8 @@ class AutomationManager(ProfileManager):
                         )
 
         logger.info(
-            f"Created {created_count} new profiles. \
-                Total profiles: {len(self.profiles)}."
+            f"Created {created_count} new profiles."
+                "Total profiles: {len(self.profiles)}."
             )
     
     
@@ -115,17 +115,22 @@ class AutomationManager(ProfileManager):
             name: task for name, task in self.running_tasks.items() \
                 if not task.done()
             }
-        sorted_profiles = sorted(self.profiles.items())
+        sorted_profiles = sorted(
+            self.profiles.items(), 
+            key=lambda item: int(item[0].split("_")[1])
+            )
+        filtered_profiles = sorted_profiles[self.automate_start - 1 : self.automate_end]
         
         for index, (profile_name, profile) in \
-            enumerate(sorted_profiles, start=1):
-            is_last_profile = (index == len(sorted_profiles))  
+            enumerate(filtered_profiles, start=self.automate_start):
+            is_last_profile = (index == self.automate_end)  
 
             if profile.proxy and not await self._check_proxy(profile.proxy):
                 logger.warning(
-                    f"Skipping profile {profile_name} due to proxy failure.\
-                        Ошибка с прокси \
-                            {profile.proxy.server}:{profile.proxy.port}.")
+                    f"Skipping profile {profile_name} due to proxy failure."
+                        "Ошибка с прокси "
+                         f"{profile.proxy.server}:{profile.proxy.port}.")
+                
                 self.failed_profiles.append(
                     {
                         'profile_name': profile_name,
@@ -189,18 +194,18 @@ class AutomationManager(ProfileManager):
                     proxy_auth=proxy_auth,
                     timeout=10
                 ) as response:
-                    logger.info(f"Proxy {proxy.server}:{proxy.port} \
-                                responded with status {response.status}")
+                    logger.info(f"Proxy {proxy.server}:{proxy.port}"
+                                " responded with status {response.status}")
                     if response.status == 200:
                         logger.info(f"Proxy {proxy.server}:{proxy.port} is working.")
                         return True
                     else:
-                        logger.warning(f"Proxy {proxy.server}:{proxy.port} \
-                                       returned status {response.status}.")
+                        logger.warning(f"Proxy {proxy.server}:{proxy.port} "
+                                       "returned status {response.status}.")
                         return False
         except Exception as e:
-            logger.error(f"Proxy {proxy.server}:{proxy.port} \
-                         failed with exception: {e}")
+            logger.error(f"Proxy {proxy.server}:{proxy.port} "
+                         "failed with exception: {e}")
             return False
         
 
@@ -221,8 +226,8 @@ class AutomationManager(ProfileManager):
             f.write("\nFailed Profiles:\n")
             for profile in self.failed_profiles:
                 f.write(
-                    f"- {profile['profile_name']}: {profile['error']}\
-                        : {profile['script']}\n"
+                    f"- {profile['profile_name']}: {profile['error']}"
+                        f": {profile['script']}\n"
                         )
             
             f.write("-" * 40 + "\n")
@@ -298,9 +303,9 @@ class AutomationManager(ProfileManager):
 
                     if is_last_profile:
                         logger.info(
-                            f"Browser for profile {profile_name} \
-                                left open for inspection.\
-                                Последний профиль, ждем 10 секунд перед закрытием."
+                            f"Browser for profile {profile_name} "
+                                "left open for inspection.\n"
+                                "Последний профиль, ждем 10 секунд перед закрытием."
                             )
                         await asyncio.sleep(10)  
                     else:
@@ -311,13 +316,13 @@ class AutomationManager(ProfileManager):
             except Exception as e:
                 retries += 1
                 logger.warning(
-                    f"Retry {retries}/{max_retries} \
-                        for profile {profile_name} due to error: {e}"
+                    f"Retry {retries}/{max_retries} "
+                        f"for profile {profile_name} due to error: {e}"
                     )
                 if retries >= max_retries:
                     logger.error(
-                        f"Profile {profile_name} \
-                            failed after {max_retries} retries."
+                        f"Profile {profile_name} "
+                            f"failed after {max_retries} retries."
                                  )
                     self.failed_profiles.append(
                         {
