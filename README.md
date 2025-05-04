@@ -28,7 +28,7 @@ Antidetect Browser Solution — это проект для управления 
    source venv/bin/activate  # Для Windows: venv\Scripts\activate
 
 3. Установите зависимости:
-    pip install -r requirements.txte
+    pip install -r requirements.txt
 
 
 
